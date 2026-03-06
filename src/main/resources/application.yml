@@ -1,0 +1,107 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: NOTIFICATION-SERVICE
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/notification_db
+    username: root
+    password: yourpassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  cloud:
+    function:
+      definition: productConsumer;lowStockConsumer;categoryConsumer;userEmailsConsumer;userEmailEventConsumer1;paymentConsumer;orderConsumer;userDeleted
+
+    stream:
+      bindings:
+
+        # ✅ Product events
+        productConsumer-in-0:
+          destination: product-topic
+          group: notification-product-group
+          content-type: application/json
+
+        # ✅ Category events
+        categoryConsumer-in-0:
+          destination: category-topic
+          group: notification-category-group
+          content-type: application/json
+
+        # ✅ Product email events
+        userEmailsConsumer-in-0:
+          destination: user-emails-topic
+          group: notification-email-group
+          content-type: application/json
+
+        # ✅ Category email events
+        userEmailEventConsumer1-in-0:
+          destination: user-emailsforcategory-topic
+          group: notification-email-category-group
+          content-type: application/json
+
+        # ✅ Payment events
+        paymentConsumer-in-0:
+          destination: payment-notification-topic
+          group: notification-payment-group
+          content-type: application/json
+
+        # ✅ Order events
+        orderConsumer-in-0:
+          destination: order-notification-topic
+          group: notification-order-group
+          content-type: application/json
+
+        # ✅ Low stock events
+        lowStockConsumer-in-0:
+          destination: low-stock-topic
+          group: notification-lowstock-group
+          content-type: application/json
+
+        # ✅ User deleted events
+        userDeleted-in-0:
+          destination: user-deleted-notification
+          group: notification-service
+
+        # ✅ Producer - fetch users for product
+        userFetch-out-0:
+          destination: user-fetch-topic
+
+        # ✅ Producer - fetch users for category
+        userFetchForCategory-out-0:
+          destination: user-fetchforcategory-topic
+
+      kafka:
+        binder:
+          brokers: localhost:9092
+          producer-properties:
+            value.serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      userService:
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
