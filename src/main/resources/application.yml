@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8082
 
 spring:
   application:
@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/notification_db
     username: root
-    password: yourpassword
+    password: Kinu@1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -26,58 +26,48 @@ spring:
     stream:
       bindings:
 
-        # ✅ Product events
         productConsumer-in-0:
           destination: product-topic
           group: notification-product-group
           content-type: application/json
 
-        # ✅ Category events
         categoryConsumer-in-0:
           destination: category-topic
           group: notification-category-group
           content-type: application/json
 
-        # ✅ Product email events
         userEmailsConsumer-in-0:
           destination: user-emails-topic
           group: notification-email-group
           content-type: application/json
 
-        # ✅ Category email events
         userEmailEventConsumer1-in-0:
           destination: user-emailsforcategory-topic
           group: notification-email-category-group
           content-type: application/json
 
-        # ✅ Payment events
         paymentConsumer-in-0:
           destination: payment-notification-topic
           group: notification-payment-group
           content-type: application/json
 
-        # ✅ Order events
         orderConsumer-in-0:
           destination: order-notification-topic
           group: notification-order-group
           content-type: application/json
 
-        # ✅ Low stock events
         lowStockConsumer-in-0:
           destination: low-stock-topic
           group: notification-lowstock-group
           content-type: application/json
 
-        # ✅ User deleted events
         userDeleted-in-0:
           destination: user-deleted-notification
           group: notification-service
 
-        # ✅ Producer - fetch users for product
         userFetch-out-0:
           destination: user-fetch-topic
 
-        # ✅ Producer - fetch users for category
         userFetchForCategory-out-0:
           destination: user-fetchforcategory-topic
 

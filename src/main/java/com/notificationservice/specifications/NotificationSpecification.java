@@ -4,7 +4,6 @@ import com.notificationservice.enums.NotificationStatus;
 import com.notificationservice.enums.NotificationType;
 import com.notificationservice.models.Notification;
 import org.springframework.data.jpa.domain.Specification;
-
 import java.time.LocalDateTime;
 
 public class NotificationSpecification {

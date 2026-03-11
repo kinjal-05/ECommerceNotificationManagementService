@@ -1,10 +1,11 @@
 package com.notificationservice.consumer;
-import java.util.function.Consumer;
 
+import java.util.function.Consumer;
 import com.notificationservice.commondtos.*;
 import com.notificationservice.services.NotificationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 @Configuration
 public class KafkaConsumerConfig {
 

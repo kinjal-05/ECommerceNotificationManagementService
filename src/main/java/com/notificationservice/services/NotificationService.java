@@ -1,7 +1,7 @@
 package com.notificationservice.services;
+
 import java.time.LocalDateTime;
 import java.util.List;
-
 import com.notificationservice.commondtos.*;
 import com.notificationservice.dtos.NotificationPatchRequest;
 import com.notificationservice.dtos.NotificationRequest;
@@ -10,6 +10,7 @@ import com.notificationservice.enums.NotificationStatus;
 import com.notificationservice.enums.NotificationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 public interface NotificationService {
 
 	NotificationResponse sendNotification(NotificationRequest request);

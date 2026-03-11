@@ -1,0 +1,11 @@
+api:
+  notification:
+    base: /api/notifications
+    send: /send
+    resend: /{id}/resend
+    update: /{id}
+    get-all: /all
+    get-by-id: /{id}
+    in-app: /inApp
+    mark-read: /markRead/{id}
+    unread-count: /unreadCount

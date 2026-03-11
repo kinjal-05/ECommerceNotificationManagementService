@@ -1,7 +1,6 @@
 package com.notificationservice.models;
 
 import java.time.LocalDateTime;
-
 import com.notificationservice.enums.NotificationStatus;
 import com.notificationservice.enums.NotificationType;
 import jakarta.persistence.Column;
@@ -28,7 +27,6 @@ import lombok.Setter;
 @Table(name = "notifications", indexes = { @Index(name = "idx_user_id", columnList = "userId"),
 		@Index(name = "idx_status", columnList = "status"),
 		@Index(name = "idx_type", columnList = "notificationType") })
-
 @Data
 @Getter
 @Setter
