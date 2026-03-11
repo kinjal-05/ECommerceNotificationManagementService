@@ -1,6 +1,6 @@
 api:
   notification:
-    base: /api/notifications
+    base: /api/notifications/v1
     send: /send
     resend: /{id}/resend
     update: /{id}

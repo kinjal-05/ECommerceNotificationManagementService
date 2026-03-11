@@ -48,15 +48,6 @@ public class Notification {
 	@Column(nullable = false)
 	private NotificationType notificationType;
 
-	@Column
-	private Long orderId;
-
-	@Column
-	private Long paymentId;
-
-	@Column
-	private Long shipmentId;
-
 	@Column(length = 255)
 	private String subject;
 
@@ -70,10 +61,6 @@ public class Notification {
 	private NotificationStatus status = NotificationStatus.PENDING;
 
 	private LocalDateTime sentAt;
-
-	@Builder.Default
-	@Column(nullable = false)
-	private Integer retryCount = 0;
 
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;

@@ -46,10 +46,9 @@ public class NotificationServiceImpl implements NotificationService {
 		if (message == null || message.isBlank()) {
 			throw new BadRequestException("Message cannot be empty");
 		}
-		Notification notification = Notification.builder().userId(request.getUserId()).orderId(request.getOrderId())
-				.paymentId(request.getPaymentId()).shipmentId(request.getShipmentId())
-				.notificationType(request.getNotificationType()).subject(subject).message(message)
-				.status(NotificationStatus.PENDING).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now())
+		Notification notification = Notification.builder().userId(request.getUserId()).
+				notificationType(request.getNotificationType()).subject(subject).message(message)
+				 .status(NotificationStatus.PENDING).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now())
 				.build();
 		try {
 			send(notification);
@@ -57,7 +56,6 @@ public class NotificationServiceImpl implements NotificationService {
 			notification.setSentAt(LocalDateTime.now());
 		} catch (Exception e) {
 			notification.setStatus(NotificationStatus.FAILED);
-			notification.setRetryCount(1);
 		}
 		Notification saved = notificationRepository.save(notification);
 		return new NotificationResponse(saved.getId(), saved.getUserId(), saved.getMessage(), saved.getSubject(),
@@ -69,8 +67,6 @@ public class NotificationServiceImpl implements NotificationService {
 
 		Notification notification = notificationRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: " + id));
-		int retryCount = notification.getRetryCount() == null ? 0 : notification.getRetryCount();
-		notification.setRetryCount(retryCount + 1);
 		notification.setUpdatedAt(LocalDateTime.now());
 		try {
 			send(notification);
@@ -270,18 +266,18 @@ public class NotificationServiceImpl implements NotificationService {
 				+ " has been shipped!\n\n" + "You will receive it in 2-3 business days.\n\n"
 				+ "Thank you for shopping with us!";
 
-		Notification email = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification email = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.EMAIL).subject(subject).message(message)
 				.status(NotificationStatus.SENT).createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(email);
 
-		Notification push = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification push = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.PUSH).subject("Order Shipped 🚚")
 				.message("Order #" + event.getOrderId() + " is on its way!").status(NotificationStatus.SENT)
 				.createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(push);
 
-		Notification inApp = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification inApp = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.IN_APP).subject("Order #" + event.getOrderId() + " Shipped")
 				.message("Your order is on its way! " + "Expected delivery in 2-3 business days.")
 				.status(NotificationStatus.SENT).createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
@@ -296,18 +292,18 @@ public class NotificationServiceImpl implements NotificationService {
 				+ " has been delivered!\n\n" + "We hope you enjoy your purchase.\n\n"
 				+ "Thank you for shopping with us!";
 
-		Notification email = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification email = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.EMAIL).subject(subject).message(message)
 				.status(NotificationStatus.SENT).createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(email);
 
-		Notification push = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification push = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.PUSH).subject("Order Delivered ✅")
 				.message("Order #" + event.getOrderId() + " has been delivered!").status(NotificationStatus.SENT)
 				.createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(push);
 
-		Notification inApp = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification inApp = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.IN_APP).subject("Order #" + event.getOrderId() + " Delivered")
 				.message("Your order has been delivered successfully!").status(NotificationStatus.SENT)
 				.createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
@@ -379,7 +375,7 @@ public class NotificationServiceImpl implements NotificationService {
 					+ "Thank you for shopping with us!";
 		}
 
-		Notification notification = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification notification = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.EMAIL).subject(subject).message(message)
 				.status(NotificationStatus.SENT).createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(notification);
@@ -398,7 +394,7 @@ public class NotificationServiceImpl implements NotificationService {
 					+ ". Thank you for shopping!";
 		}
 
-		Notification notification = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification notification = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.SMS).message(message).status(NotificationStatus.SENT)
 				.createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(notification);
@@ -418,7 +414,7 @@ public class NotificationServiceImpl implements NotificationService {
 			message = "Order #" + event.getOrderId() + " confirmed! Amount: ₹" + event.getTotalAmount();
 		}
 
-		Notification notification = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification notification = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.PUSH).subject(title).message(message).status(NotificationStatus.SENT)
 				.createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(notification);
@@ -440,7 +436,7 @@ public class NotificationServiceImpl implements NotificationService {
 					+ event.getTotalAmount();
 		}
 
-		Notification notification = Notification.builder().userId(user.getUserId()).orderId(event.getOrderId())
+		Notification notification = Notification.builder().userId(user.getUserId())
 				.notificationType(NotificationType.IN_APP).subject(title).message(message)
 				.status(NotificationStatus.SENT).createdAt(LocalDateTime.now()).sentAt(LocalDateTime.now()).build();
 		notificationRepository.save(notification);
